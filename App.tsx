@@ -1,10 +1,12 @@
 import {StatusBar} from 'expo-status-bar';
-import {Platform, SafeAreaView, StyleSheet, Text} from 'react-native';
+import {Platform, SafeAreaView, StyleSheet} from 'react-native';
+import Home from './src/views/Home';
 
 const App = () => {
+  console.log('moro');
   return (
     <SafeAreaView style={styles.container}>
-      <Text>Hello, React Native!</Text>
+      <Home />
       <StatusBar style="auto" />
     </SafeAreaView>
   );
