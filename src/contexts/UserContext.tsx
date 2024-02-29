@@ -1,5 +1,6 @@
 // UserContext.tsx
 import React, {createContext, useState} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {UserWithNoPassword} from '../types/DBTypes';
 import {useAuthentication, useUser} from '../hooks/apiHooks';
 import {AuthContextType, Credentials} from '../types/LocalTypes';
@@ -16,7 +17,7 @@ const UserProvider = ({children}: {children: React.ReactNode}) => {
     try {
       const loginResult = await postLogin(credentials);
       if (loginResult) {
-        localStorage.setItem('token', loginResult.token);
+        await AsyncStorage.setItem('token', loginResult.token);
         setUser(loginResult.user);
       }
     } catch (e) {
@@ -24,10 +25,10 @@ const UserProvider = ({children}: {children: React.ReactNode}) => {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     try {
       // remove token from local storage
-      localStorage.removeItem('token');
+      await AsyncStorage.removeItem('token');
       // set user to null
       setUser(null);
       // navigate to home
@@ -40,13 +41,12 @@ const UserProvider = ({children}: {children: React.ReactNode}) => {
   const handleAutoLogin = async () => {
     try {
       // get token from local storage
-      const token = localStorage.getItem('token');
+      const token = await AsyncStorage.getItem('token');
       if (token) {
         // if token exists, get user data from API
         const userResponse = await getUserByToken(token);
         // set user to state
         setUser(userResponse.user);
-        // when page is refreshed, the user is redirected to origin (see ProtectedRoute.tsx)
       }
     } catch (e) {
       console.log((e as Error).message);
