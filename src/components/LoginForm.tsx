@@ -1,10 +1,9 @@
-import {Card, Input} from '@rneui/base';
 import {Controller, useForm} from 'react-hook-form';
-import {Button} from 'react-native';
+import {Button, Card, Input} from '@rneui/base';
 import {useUserContext} from '../hooks/ContextHooks';
 import {Credentials} from '../types/LocalTypes';
 
-export const LoginForm = () => {
+const LoginForm = () => {
   const {handleLogin} = useUserContext();
   const initValues: Credentials = {username: '', password: ''};
   const {
@@ -24,7 +23,10 @@ export const LoginForm = () => {
       <Controller
         control={control}
         rules={{
-          required: {value: true, message: 'is required'},
+          required: {
+            value: true,
+            message: 'Käyttäjänimi vaaditaan vitun pelle',
+          },
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <Input
@@ -47,7 +49,7 @@ export const LoginForm = () => {
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <Input
-            placeholder="password"
+            placeholder="Password"
             secureTextEntry
             onBlur={onBlur}
             onChangeText={onChange}
@@ -61,3 +63,5 @@ export const LoginForm = () => {
     </Card>
   );
 };
+
+export default LoginForm;
