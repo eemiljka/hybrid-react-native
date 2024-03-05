@@ -4,6 +4,7 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import {Button, Card, Icon, ListItem} from '@rneui/base';
+import {ScrollView} from 'react-native';
 import {useUserContext} from '../hooks/ContextHooks';
 
 const Profile = () => {
@@ -12,30 +13,32 @@ const Profile = () => {
   return (
     <>
       {user && (
-        <Card>
-          <Card.Image source={{uri: 'https://placekitten.com/300/300'}} />
-          <ListItem>
-            <Icon name="person" />
-            <ListItem.Title>{user.username}</ListItem.Title>
-          </ListItem>
-          <ListItem>
-            <Icon name="email" />
-            <ListItem.Title>{user.email}</ListItem.Title>
-          </ListItem>
-          <ListItem>
-            <ListItem.Title>user id: {user.user_id}</ListItem.Title>
-          </ListItem>
-          <Card.Divider />
-          <Button onPress={() => navigation.navigate('My Files')}>
-            My Files &nbsp;
-            <Icon name="folder" color="white" />
-          </Button>
-          <Card.Divider />
-          <Button onPress={handleLogout}>
-            Logout &nbsp;
-            <Icon name="logout" color="white" />
-          </Button>
-        </Card>
+        <ScrollView>
+          <Card>
+            <Card.Image source={{uri: 'https://placekitten.com/300/300'}} />
+            <ListItem>
+              <Icon name="person" />
+              <ListItem.Title>{user.username}</ListItem.Title>
+            </ListItem>
+            <ListItem>
+              <Icon name="email" />
+              <ListItem.Title>{user.email}</ListItem.Title>
+            </ListItem>
+            <ListItem>
+              <ListItem.Title>user id: {user.user_id}</ListItem.Title>
+            </ListItem>
+            <Card.Divider />
+            <Button onPress={() => navigation.navigate('My Files')}>
+              My Files &nbsp;
+              <Icon name="folder" color="white" />
+            </Button>
+            <Card.Divider />
+            <Button onPress={handleLogout}>
+              Logout &nbsp;
+              <Icon name="logout" color="white" />
+            </Button>
+          </Card>
+        </ScrollView>
       )}
     </>
   );

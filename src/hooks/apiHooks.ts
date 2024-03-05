@@ -1,4 +1,5 @@
 import {useEffect, useState} from 'react';
+import * as FileSystem from 'expo-file-system';
 import {
   Comment,
   Like,
@@ -15,9 +16,11 @@ import {
   UploadResponse,
   UserResponse,
 } from '../types/MessageTypes';
+import {useUpdateContext} from './UpdateHook';
 
 const useMedia = () => {
   const [mediaArray, setMediaArray] = useState<MediaItemWithOwner[]>([]);
+  const {update} = useUpdateContext();
 
   const getMedia = async () => {
     try {
@@ -37,6 +40,7 @@ const useMedia = () => {
           return itemWithOwner;
         }),
       );
+      itemsWithOwner.reverse();
       setMediaArray(itemsWithOwner);
       console.log('mediaArray updated:', itemsWithOwner);
     } catch (error) {
@@ -46,7 +50,7 @@ const useMedia = () => {
 
   useEffect(() => {
     getMedia();
-  }, []);
+  }, [update]);
 
   const postMedia = (
     file: UploadResponse,
@@ -82,7 +86,25 @@ const useMedia = () => {
     );
   };
 
-  return {mediaArray, postMedia};
+  const putMedia = async (
+    inputs: Record<string, string>,
+    token: string,
+    media_id: number,
+  ) => {
+    await fetchData<MessageResponse>(
+      process.env.EXPO_PUBLIC_MEDIA_API + '/media/' + media_id,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: 'Bearer ' + token,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(inputs),
+      },
+    );
+  };
+
+  return {mediaArray, postMedia, putMedia};
 };
 
 const useUser = () => {
@@ -175,7 +197,26 @@ const useFile = () => {
     );
   };
 
-  return {postFile};
+  const postExpoFile = async (
+    imageUri: string,
+    token: string,
+  ): Promise<UploadResponse> => {
+    const fileResult = await FileSystem.uploadAsync(
+      process.env.EXPO_PUBLIC_UPLOAD_SERVER + '/upload',
+      imageUri,
+      {
+        httpMethod: 'POST',
+        uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+        fieldName: 'file',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      },
+    );
+    return JSON.parse(fileResult.body);
+  };
+
+  return {postFile, postExpoFile};
 };
 
 const useLike = () => {
