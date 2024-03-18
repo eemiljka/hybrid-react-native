@@ -24,7 +24,7 @@ type UserResponse = MessageResponse & {
 };
 
 type UserDeleteResponse = MessageResponse & {
-  user: { user_id: number };
+  user: {user_id: number};
 };
 
 type AvailableResponse = Partial<MessageResponse> & {
